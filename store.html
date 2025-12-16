@@ -1,0 +1,204 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Yiting | 極簡服飾</title>
+
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@300;400;700&display=swap" rel="stylesheet">
+
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            font-family: 'Noto Sans TC', sans-serif;
+            background: #f9f9f9;
+            color: #333;
+        }
+
+        a { text-decoration: none; color: inherit; }
+        ul { list-style: none; }
+
+        header {
+            position: fixed;
+            top: 0;
+            width: 100%;
+            height: 64px;
+            background: #fff;
+            padding: 0 5%;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 2px 10px rgba(0,0,0,.05);
+            z-index: 1000;
+        }
+
+        .logo { font-size: 1.5rem; font-weight: 700; }
+
+        .nav-links { display: flex; gap: 2rem; }
+
+        .hero {
+            min-height: 100vh;
+            padding-top: 64px;
+            background: linear-gradient(rgba(0,0,0,.35), rgba(0,0,0,.35)),
+            url("https://images.unsplash.com/photo-1483985988355-763728e1935b?q=80&w=2070");
+            background-size: cover;
+            background-position: center;
+            color: #fff;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .hero h1 { font-size: 3rem; font-weight: 300; }
+        .hero p { margin: 1rem 0 2rem; }
+
+        .btn {
+            padding: 12px 32px;
+            background: #fff;
+            color: #000;
+            font-weight: bold;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 4rem 2rem;
+        }
+
+        .section-title {
+            text-align: center;
+            font-size: 2rem;
+            margin-bottom: 3rem;
+        }
+
+        .product-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 2rem;
+        }
+
+        .product-card {
+            background: #fff;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .product-img-wrap {
+            aspect-ratio: 3 / 4;
+            overflow: hidden;
+        }
+
+        .product-img-wrap img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .product-info {
+            padding: 1.2rem;
+            text-align: center;
+            display: flex;
+            flex-direction: column;
+            gap: .4rem;
+        }
+
+        .product-price { font-weight: 700; }
+
+        .add-to-cart {
+            margin-top: auto;
+            padding: 10px;
+            background: #000;
+            color: #fff;
+            border: none;
+            cursor: pointer;
+        }
+
+        footer {
+            background: #111;
+            color: #fff;
+            text-align: center;
+            padding: 2rem;
+        }
+
+        @media (max-width: 768px) {
+            .product-grid { grid-template-columns: repeat(2, 1fr); }
+            .nav-links { display: none; }
+        }
+    </style>
+</head>
+
+<body>
+
+<header>
+    <div class="logo">Yiting.</div>
+    <ul class="nav-links">
+        <li>男裝</li>
+        <li>女裝</li>
+        <li>配件</li>
+    </ul>
+    <a href="cart.html">🛒 <span id="cart-count">0</span></a>
+</header>
+
+<section class="hero">
+    <h1>Summer 2025</h1>
+    <p>簡約而不簡單</p>
+    <a class="btn">立即選購</a>
+</section>
+
+<section class="container">
+    <h2 class="section-title">熱銷推薦</h2>
+    <div class="product-grid" id="product-grid"></div>
+</section>
+
+<footer>
+    &copy; 2025 Yiting Studio
+</footer>
+
+<!-- 商品資料 -->
+<script src="./js/products.js"></script>
+
+<!-- 商品渲染 -->
+<script src="./js/render-products.js"></script>
+
+<!-- 購物車邏輯 -->
+<script>
+function getCart() {
+    return JSON.parse(localStorage.getItem("cart")) || [];
+}
+
+function saveCart(cart) {
+    localStorage.setItem("cart", JSON.stringify(cart));
+}
+
+function updateCartCount() {
+    const total = getCart().reduce((s, i) => s + i.qty, 0);
+    document.getElementById("cart-count").textContent = total;
+}
+
+document.addEventListener("click", e => {
+    if (!e.target.classList.contains("add-to-cart")) return;
+
+    const btn = e.target;
+    const product = {
+        id: btn.dataset.id,
+        name: btn.dataset.name,
+        price: Number(btn.dataset.price),
+        qty: 1
+    };
+
+    const cart = getCart();
+    const exist = cart.find(p => p.id === product.id);
+
+    exist ? exist.qty++ : cart.push(product);
+    saveCart(cart);
+    updateCartCount();
+    alert("已加入購物車");
+});
+
+updateCartCount();
+</script>
+
+</body>
+</html>
